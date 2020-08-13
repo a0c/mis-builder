@@ -92,7 +92,7 @@ class AccountingExpressionProcessor(object):
                 exact_codes.add(account_code)
         for account in account_model.\
                 search([('code', 'in', list(exact_codes)),
-                        ('parent_id', 'child_of', root_account.id)]):
+                        ('parent_id', 'child_of', root_account.child_consol_ids.ids or root_account.id)]):
             if account.code == root_account.code:
                 code = None
             else:
@@ -108,7 +108,7 @@ class AccountingExpressionProcessor(object):
         for like_code in like_codes:
             for account in account_model.\
                     search([('code', '=like', like_code),
-                            ('parent_id', 'child_of', root_account.id)]):
+                            ('parent_id', 'child_of', root_account.child_consol_ids.ids or root_account.id)]):
                 if account.type in ('view', 'consolidation'):
                     self._account_ids_by_code[like_code].update(
                         account_obj._get_children_and_consol(
